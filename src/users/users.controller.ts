@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  BadRequestException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -16,7 +17,13 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
- async create(@Body() createUserDto: CreateUserDto) {
+  async create(@Body() createUserDto: CreateUserDto) {
+    const existingUser = await this.usersService.findUserByEmail(
+      createUserDto.email,
+    );
+    if (existingUser) {
+      throw new BadRequestException('Email already in use');
+    }
     return this.usersService.create(createUserDto);
   }
 

@@ -42,4 +42,8 @@ export class UsersService {
     return `${salt}:${hashedPassword}`;
   }
 
+  async findUserByEmail(email:string):Promise<User|undefined>{
+    return  this.userModel.findOne({email}).exec();
+  }
+
 }
